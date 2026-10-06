@@ -66,7 +66,7 @@
 <div class="container">
 
     <h2>Cadastro de Pessoa</h2>
-    <form method="POST" action="controlador.php">
+    <form method="POST" action="usuario-controlador.php">
 
         
 

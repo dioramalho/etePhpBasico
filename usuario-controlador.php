@@ -1,16 +1,16 @@
 <?php
 include_once 'conexao.php';
 
-if($_POST){
-    $nome = $_POST['nome'];
-    $cpf = $_POST['cpf'];
-    $email = $_POST['email'];
-    $telefone = $_POST['telefone'];
-    $endereco = $_POST['endereco'];
-    
+if($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $nome = isset($_POST['nome']) ? trim($_POST['nome']) : '';
+    $cpf = isset($_POST['cpf']) ? trim($_POST['cpf']) : '';
+    $email = isset($_POST['email']) ? trim($_POST['email']) : '';
+    $telefone = isset($_POST['telefone']) ? trim($_POST['telefone']) : '';
+    $endereco = isset($_POST['endereco']) ? trim($_POST['endereco']) : '';
+
     cadastro($nome, $cpf, $email, $telefone, $endereco);
 }
-
 //  listar();
 
 buscarPorId(4);
