@@ -11,9 +11,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     cadastro($nome, $cpf, $email, $telefone, $endereco);
 }
-//  listar();
 
-buscarPorId(4);
+
 function buscarPorId($id) {
         global $pdo;
         $sql = "SELECT * FROM `usuario_tb` WHERE `id` = :id";
@@ -44,13 +43,14 @@ function buscarPorId($id) {
         }
     }
 
-    function listar() {
+   function listar() {
         global $pdo;
         $sql = "SELECT * FROM `usuario_tb`";
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        echo json_encode($result);
+        // echo json_encode($result);
+        return $result;
     }
 
     function deletar($id) {
