@@ -1,6 +1,12 @@
 <?php
 include_once 'conexao.php';
 
+if (isset($_GET['excluir'])) {
+    deletar($_GET['excluir']);
+    header('Location: usuario-listar.php');
+    exit;
+}
+
 if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cadastrar'])) {
 
     $nome = isset($_POST['nome']) ? trim($_POST['nome']) : '';
@@ -68,12 +74,7 @@ function buscarPorNome($nome) {
         $sql = "DELETE FROM `usuario_tb` WHERE `id` = :id";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':id', $id);
-        $result = $stmt->execute();
-        if ($result) {
-            echo 'true';
-        } else {
-            echo 'false';
-        }
+        return $stmt->execute();
     }
 
     function atualizar($id, $nome, $cpf, $email, $telefone, $endereco) {
