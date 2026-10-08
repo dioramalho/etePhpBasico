@@ -1,7 +1,7 @@
 <?php
 include_once 'conexao.php';
 
-if($_SERVER['REQUEST_METHOD'] === 'POST') {
+if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cadastrar'])) {
 
     $nome = isset($_POST['nome']) ? trim($_POST['nome']) : '';
     $cpf = isset($_POST['cpf']) ? trim($_POST['cpf']) : '';
@@ -21,6 +21,16 @@ function buscarPorId($id) {
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         echo json_encode($result);
+}
+
+function buscarPorNome($nome) {
+    global $pdo;
+    $sql = "SELECT * FROM `usuario_tb` WHERE `nome` LIKE CONCAT('%', :nome, '%')";
+   
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':nome', $nome);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);    
 }
 
     function cadastro($nome, $cpf, $email, $telefone, $endereco) {
