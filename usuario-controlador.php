@@ -1,13 +1,14 @@
 <?php
 include_once 'conexao.php';
+include_once 'usuario-model.php';
 
 if (isset($_GET['excluir'])) {
     deletar($_GET['excluir']);
-    header('Location: usuario-listar.php');
+    header('Location: usuario-controlador.php?usuario=listar');
     exit;
 }
 
-if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cadastrar'])) {
+if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cad'])) {
 
     $nome = isset($_POST['nome']) ? trim($_POST['nome']) : '';
     $cpf = isset($_POST['cpf']) ? trim($_POST['cpf']) : '';
@@ -16,84 +17,27 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cadastrar'])) {
     $endereco = isset($_POST['endereco']) ? trim($_POST['endereco']) : '';
 
     cadastro($nome, $cpf, $email, $telefone, $endereco);
+    var_dump($nome, $cpf, $email, $telefone, $endereco);
 }
 
 
-function buscarPorId($id) {
-        global $pdo;
-        $sql = "SELECT * FROM `usuario_tb` WHERE `id` = :id";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        echo json_encode($result);
+
+if (isset($_GET['usuario']) && $_GET['usuario'] === 'cadastro') {
+    include_once 'usuario-cadastro-view.php';
 }
 
-function buscarPorNome($nome) {
-    global $pdo;
-    $sql = "SELECT * FROM `usuario_tb` WHERE `nome` LIKE CONCAT('%', :nome, '%')";
-   
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':nome', $nome);
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);    
+if (isset($_GET['usuario']) && $_GET['usuario'] === 'listar') {
+
+    $usuarios = listar();
+    if (isset($_POST['buscar'])) {
+        $usuarios = buscarPorNome($_POST['buscar']);
+    }
+    include_once 'header-view.php';
+    include_once 'usuario-cadastro-view.php';
+    include_once 'usuario-listar-view.php';
+    include_once 'footer-view.php';
 }
 
-    function cadastro($nome, $cpf, $email, $telefone, $endereco) {
-        global $pdo;
-        $sql = "INSERT INTO `usuario_tb` (`nome`, `cpf`, `email`, `telefone`, `endereco`)
-        VALUES(:nome, :cpf, :email, :telefone, :endereco)";
-
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':nome', $nome);
-        $stmt->bindParam(':cpf', $cpf);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':telefone', $telefone);
-        $stmt->bindParam(':endereco', $endereco);
-
-        $result = $stmt->execute();
-        if ($result) {
-            echo 'true';
-        } else {
-            echo 'false';
-        }
-    }
-
-   function listar() {
-        global $pdo;
-        $sql = "SELECT * FROM `usuario_tb`";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        // echo json_encode($result);
-        return $result;
-    }
-
-    function deletar($id) {
-        global $pdo;
-        $sql = "DELETE FROM `usuario_tb` WHERE `id` = :id";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        return $stmt->execute();
-    }
-
-    function atualizar($id, $nome, $cpf, $email, $telefone, $endereco) {
-        global $pdo;
-        $sql = "UPDATE `usuario_tb` SET `nome` = :nome, `cpf` = :cpf, `email` = :email, `telefone` = :telefone, `endereco` = :endereco WHERE `id` = :id";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':nome', $nome);
-        $stmt->bindParam(':cpf', $cpf);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':telefone', $telefone);
-        $stmt->bindParam(':endereco', $endereco);
-        $result = $stmt->execute();
-        if ($result) {
-            echo 'true';
-        } else {
-            echo 'false';
-        }
-    }
 
     
 
